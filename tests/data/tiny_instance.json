@@ -1,0 +1,61 @@
+{
+  "corridors": [
+    {
+      "asset_ids": [1, 2],
+      "id": 1,
+      "traffic_level": "low"
+    }
+  ],
+  "horizon": 1440,
+  "meta": {},
+  "resources": [
+    {
+      "availability": [
+        {
+          "end": 1440,
+          "start": 0
+        }
+      ],
+      "capacity": 2,
+      "type": "crew"
+    }
+  ],
+  "schema_version": 1,
+  "tasks": [
+    {
+      "asset_id": 1,
+      "corridor_id": 1,
+      "criticality": 3,
+      "demands": {"crew": 1},
+      "depends_on": [],
+      "duration": 30,
+      "id": 1,
+      "urgency": 2,
+      "window_end": 200,
+      "window_start": 0
+    },
+    {
+      "asset_id": 2,
+      "corridor_id": 1,
+      "criticality": 2,
+      "demands": {},
+      "depends_on": [1],
+      "duration": 20,
+      "id": 2,
+      "urgency": 4,
+      "window_end": 400,
+      "window_start": 50
+    }
+  ],
+  "timetable": [
+    {
+      "corridor_id": 1,
+      "intervals": [
+        {
+          "end": 120,
+          "start": 100
+        }
+      ]
+    }
+  ]
+}

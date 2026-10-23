@@ -55,7 +55,9 @@ def validate_instance(instance: Instance) -> list[InputError]:
 
     # Collect reference sets
     corridor_ids = {c.id for c in instance.corridors}
-    asset_ids_by_corridor: dict[int, set[int]] = {c.id: set(c.asset_ids) for c in instance.corridors}
+    asset_ids_by_corridor: dict[int, set[int]] = {
+        c.id: set(c.asset_ids) for c in instance.corridors
+    }
     all_asset_ids: set[int] = set()
     for aids in asset_ids_by_corridor.values():
         all_asset_ids.update(aids)
@@ -73,7 +75,9 @@ def validate_instance(instance: Instance) -> list[InputError]:
     for task in instance.tasks:
         # E_DURATION: duration must be positive
         if task.duration <= 0:
-            errors.append(InputError(E_DURATION, f"Task {task.id}: duration must be > 0, got {task.duration}"))
+            errors.append(
+                InputError(E_DURATION, f"Task {task.id}: duration must be > 0, got {task.duration}")
+            )
 
         # E_WINDOW: window must be at least as long as duration
         window_len = task.window_end - task.window_start
@@ -90,7 +94,8 @@ def validate_instance(instance: Instance) -> list[InputError]:
             errors.append(
                 InputError(
                     E_HORIZON,
-                    f"Task {task.id}: window [{task.window_start},{task.window_end}) outside horizon [0,{instance.horizon}]",
+                    f"Task {task.id}: window [{task.window_start},{task.window_end})"
+                    f" outside horizon [0,{instance.horizon}]",
                 )
             )
 
@@ -105,7 +110,8 @@ def validate_instance(instance: Instance) -> list[InputError]:
                 errors.append(
                     InputError(
                         E_UNKNOWN_REF,
-                        f"Task {task.id}: asset_id {task.asset_id} not in corridor {task.corridor_id}",
+                        f"Task {task.id}: asset_id {task.asset_id}"
+                        f" not in corridor {task.corridor_id}",
                     )
                 )
 
@@ -121,7 +127,8 @@ def validate_instance(instance: Instance) -> list[InputError]:
                     errors.append(
                         InputError(
                             E_DEMAND,
-                            f"Task {task.id}: demand {demand} for '{res_type}' exceeds capacity {cap}",
+                            f"Task {task.id}: demand {demand} for '{res_type}'"
+                            f" exceeds capacity {cap}",
                         )
                     )
 
@@ -131,7 +138,9 @@ def validate_instance(instance: Instance) -> list[InputError]:
                 InputError(E_RANGE, f"Task {task.id}: criticality {task.criticality} not in [1,5]")
             )
         if not (1 <= task.urgency <= 5):
-            errors.append(InputError(E_RANGE, f"Task {task.id}: urgency {task.urgency} not in [1,5]"))
+            errors.append(
+                InputError(E_RANGE, f"Task {task.id}: urgency {task.urgency} not in [1,5]")
+            )
 
         # E_DEP_SELF: task must not depend on itself
         if task.id in task.depends_on:
@@ -155,7 +164,8 @@ def validate_instance(instance: Instance) -> list[InputError]:
                 errors.append(
                     InputError(
                         E_TRAIN_BAD,
-                        f"Corridor {timetable.corridor_id}: train interval [{ti.start},{ti.end}) has start >= end",
+                        f"Corridor {timetable.corridor_id}: train interval"
+                        f" [{ti.start},{ti.end}) has start >= end",
                     )
                 )
 
