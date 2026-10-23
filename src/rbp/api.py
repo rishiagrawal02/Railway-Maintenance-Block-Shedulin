@@ -3,8 +3,6 @@
 This is the only module that the UI (app/streamlit_app.py) may import from rbp.
 """
 
-from typing import Any
-
 
 def get_version() -> str:
     """Return the package version string."""
