@@ -1,0 +1,1 @@
+"""Adaptive algorithm selector module."""

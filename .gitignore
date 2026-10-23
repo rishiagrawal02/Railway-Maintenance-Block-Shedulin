@@ -1,0 +1,33 @@
+# Virtual environment
+.venv/
+env/
+venv/
+
+# Python bytecode & cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+build/
+dist/
+
+# Testing & Linting
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Logs & generated artifacts
+*.log
+results/
+data/generated/
+
+# Secrets & local config overrides
+.env
+.streamlit/secrets.toml
+config/local.yaml
+
+# IDEs
+.vscode/
+.idea/
+.DS_Store

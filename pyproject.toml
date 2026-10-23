@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rbp"
+version = "0.1.0"
+description = "Adaptive Hybrid Scheduling for Railway Maintenance Block Planning"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "pytest>=9.0",
+    "pytest-cov>=7.0",
+    "ruff>=0.17",
+    "PyYAML>=6.0",
+    "ortools>=9.15",
+    "streamlit>=1.40",
+    "pandas>=3.0",
+    "matplotlib>=3.10",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q --strict-markers"
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "ortools: marks tests requiring OR-Tools",
+]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
