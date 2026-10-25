@@ -22,3 +22,4 @@ This document records formal correctness gate results across development phases.
     7. `long_low_vs_short_high`
   - 100% of DP schedules verified against the independent ground-truth validator (`validate_schedule`).
   - 100% of reported DP objectives match exact sum of scheduled task weights.
+
