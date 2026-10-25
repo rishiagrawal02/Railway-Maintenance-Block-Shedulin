@@ -1,5 +1,26 @@
 {
-  "version": 0,
-  "threshold": 0.5,
-  "alpha": [0.2, 0.2, 0.2, 0.2, 0.2]
+  "version": 1,
+  "threshold": 0.715,
+  "alpha": [
+    0.2,
+    0.2,
+    0.2,
+    0.2,
+    0.2
+  ],
+  "calibration_seeds": [
+    1000,
+    1029
+  ],
+  "labelling_limits": {
+    "max_deterministic_time": 5.0,
+    "sample_sizes": [
+      20,
+      25,
+      30,
+      40
+    ]
+  },
+  "git_hash": "17bc7996db0e1865132fdcbd15623613e1d64255",
+  "date": "2026-10-25T20:37:44Z"
 }

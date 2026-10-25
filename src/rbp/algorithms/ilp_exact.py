@@ -88,6 +88,7 @@ def solve_ilp_exact(
     time_limit_s: float | None = None,
     num_workers: int = 1,
     random_seed: int = 42,
+    deterministic_time_limit: float | None = None,
 ) -> AlgoResult:
     """Solve the maintenance block scheduling problem exactly using OR-Tools CP-SAT.
 
@@ -96,6 +97,7 @@ def solve_ilp_exact(
       time_limit_s: Maximum solver wall-clock time in seconds (None for unlimited).
       num_workers: Number of parallel search workers (default 1 for determinism).
       random_seed: Random seed for CP-SAT search (default 42).
+      deterministic_time_limit: Maximum deterministic time budget (for machine-speed independence).
 
     Returns:
       AlgoResult with final Schedule, total objective, and metadata.
@@ -222,6 +224,8 @@ def solve_ilp_exact(
     solver.parameters.random_seed = random_seed
     if time_limit_s is not None:
         solver.parameters.max_time_in_seconds = float(time_limit_s)
+    if deterministic_time_limit is not None:
+        solver.parameters.max_deterministic_time = float(deterministic_time_limit)
 
     status = solver.Solve(model)
     status_name = solver.StatusName(status)
@@ -249,11 +253,14 @@ def solve_ilp_exact(
     except (ValueError, AttributeError):
         best_bound = float(objective)
 
+    det_time = getattr(solver, "deterministic_time", 0.0)
+
     meta: dict[str, Any] = {
         "status": status_name,
         "optimal": is_optimal,
         "best_bound": best_bound,
         "runtime_s": elapsed,
+        "deterministic_time": det_time,
         "n_tasks": len(instance.tasks),
         "n_scheduled": len(final_starts),
         "num_workers": num_workers,
