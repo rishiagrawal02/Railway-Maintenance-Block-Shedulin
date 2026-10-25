@@ -41,9 +41,12 @@ def check_module_imports(source_file_path: Path, source_code: str | None = None)
                 violations.append(f"{path_str} (models) illegally imports '{mod}'")
 
         elif is_validation:
-            # validation imports ONLY rbp.models
+            # validation imports ONLY rbp.models and its own package rbp.validation
             if (mod == "rbp" or mod.startswith("rbp.")) and not (
-                mod == "rbp.models" or mod.startswith("rbp.models.")
+                mod == "rbp.models"
+                or mod.startswith("rbp.models.")
+                or mod == "rbp.validation"
+                or mod.startswith("rbp.validation.")
             ):
                 violations.append(f"{path_str} (validation) illegally imports '{mod}'")
 
