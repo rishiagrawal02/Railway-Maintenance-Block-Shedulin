@@ -12,9 +12,11 @@ from .features import (
     feature_f5_corridor_utilization,
     load_alpha,
 )
+from .selector import Decision, run_selected, select
 
 __all__ = [
     "DEFAULT_N_REF",
+    "Decision",
     "Features",
     "complexity_score",
     "compute_features",
@@ -24,4 +26,6 @@ __all__ = [
     "feature_f4_window_tightness",
     "feature_f5_corridor_utilization",
     "load_alpha",
+    "run_selected",
+    "select",
 ]
