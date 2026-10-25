@@ -1,0 +1,21 @@
+# E1: Optimality Gap Study
+# Compares algorithm objectives vs ILP-EXACT reference on small-to-medium sizes.
+# Only rows where ILP-EXACT status == OPTIMAL contribute to the optimality gap.
+id: e1
+description: "Optimality gap: solution quality vs ILP-EXACT reference across sizes."
+instance_kind: extended        # generate_extended instances
+seed_kind: evaluation          # must be in evaluation range [2000, 2099]
+seeds: [2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009,
+        2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019,
+        2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029]
+sizes: [20, 40, 80, 120]
+knob_levels:
+  - label: "default"
+    params: {}
+algorithms:
+  - NAIVE-GREEDY
+  - CA-GREEDY
+  - SELECTOR
+  - ILP-EXACT
+ilp_time_limit: 120            # seconds wall-clock, for ILP-EXACT rows
+deterministic_time_limit: null # no deterministic limit in evaluation runs

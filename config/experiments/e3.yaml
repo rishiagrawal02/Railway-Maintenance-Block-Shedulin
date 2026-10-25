@@ -1,0 +1,33 @@
+# E3: Conflict Density Study
+# Vary assets_per_corridor (proxy for conflict density); n=100, 30 seeds.
+id: e3
+description: "Conflict density: objective ratio and selector decisions vs density level."
+instance_kind: extended
+seed_kind: evaluation
+seeds: [2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009,
+        2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019,
+        2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029]
+sizes: [100]
+knob_levels:
+  - label: "density_high"
+    params:
+      assets_per_corridor: 8
+  - label: "density_medium_high"
+    params:
+      assets_per_corridor: 6
+  - label: "density_medium"
+    params:
+      assets_per_corridor: 4
+  - label: "density_medium_low"
+    params:
+      assets_per_corridor: 3
+  - label: "density_low"
+    params:
+      assets_per_corridor: 2
+algorithms:
+  - NAIVE-GREEDY
+  - CA-GREEDY
+  - SELECTOR
+  - ILP-EXACT
+ilp_time_limit: 60
+deterministic_time_limit: null
