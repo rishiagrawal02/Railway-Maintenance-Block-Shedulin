@@ -5,6 +5,7 @@ from .instance import Instance
 from .interval import Interval
 from .resource import Resource
 from .schedule import Schedule
+from .simplified import is_simplified
 from .task import Task
 from .timetable import Timetable, TrainInterval
 
@@ -17,4 +18,5 @@ __all__ = [
     "Task",
     "Timetable",
     "TrainInterval",
+    "is_simplified",
 ]
