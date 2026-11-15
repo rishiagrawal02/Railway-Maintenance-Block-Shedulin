@@ -32,6 +32,7 @@ from rbp.metrics.metrics import (
 from rbp.models.instance import Instance
 from rbp.models.schedule import Schedule
 from rbp.models.simplified import is_simplified
+from rbp.selector.selector import run_selected
 from rbp.validation.validator import validate_schedule
 
 ALGORITHMS: dict[str, Callable[..., Any]] = {
@@ -40,6 +41,7 @@ ALGORITHMS: dict[str, Callable[..., Any]] = {
     "CA-GREEDY": solve_ca_greedy,
     "ILP-EXACT": solve_ilp_exact,
     "BRUTE-FORCE": solve_brute_force,
+    "SELECTOR": run_selected,
 }
 
 
@@ -233,7 +235,8 @@ def run_algorithm(
     sched_count = scheduled_count(schedule)
 
     # Determine status
-    if algo_meta.get("status") == "TIMEOUT" or algo_meta.get("cp_status") == "TIMEOUT":
+    solver_status = algo_meta.get("status") or algo_meta.get("cp_status")
+    if solver_status in ("TIMEOUT", "FEASIBLE", "UNKNOWN"):
         status = "TIMEOUT"
     else:
         status = "OK"
@@ -242,10 +245,12 @@ def run_algorithm(
     # Genuine optimum comes only from BRUTE-FORCE, WIS-DP on a simplified instance,
     # or ILP with status OPTIMAL.
     is_genuine_opt = False
-    if status == "OK":
-        if algo_name in ("WIS-DP", "BRUTE-FORCE") and is_simplified(instance):
+    decision = algo_meta.get("decision")
+    chosen = decision.algorithm if decision is not None else algo_name
+    if status == "OK" and not violations:
+        if chosen in ("WIS-DP", "BRUTE-FORCE") and is_simplified(instance):
             is_genuine_opt = True
-        elif algo_name == "ILP-EXACT":
+        elif chosen == "ILP-EXACT":
             ilp_status = algo_meta.get("status") or algo_meta.get("cp_status")
             if ilp_status == "OPTIMAL" or algo_meta.get("optimal") is True:
                 is_genuine_opt = True

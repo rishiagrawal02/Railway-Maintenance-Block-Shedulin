@@ -1,0 +1,60 @@
+id: E3
+sizes:
+- 100
+seeds:
+- 2000
+- 2001
+- 2002
+- 2003
+- 2004
+- 2005
+- 2006
+- 2007
+- 2008
+- 2009
+- 2010
+- 2011
+- 2012
+- 2013
+- 2014
+- 2015
+- 2016
+- 2017
+- 2018
+- 2019
+- 2020
+- 2021
+- 2022
+- 2023
+- 2024
+- 2025
+- 2026
+- 2027
+- 2028
+- 2029
+repeats: 1
+studies:
+- kind: extended
+  algorithms:
+  - NAIVE-GREEDY
+  - CA-GREEDY
+  - SELECTOR
+  - ILP-EXACT
+  knobs:
+  - assets_per_corridor: 8
+  - assets_per_corridor: 6
+  - assets_per_corridor: 4
+  - assets_per_corridor: 3
+  - assets_per_corridor: 2
+solver_options:
+  ILP-EXACT:
+    time_limit_s: 30.0
+    deterministic_time_limit: 1.0
+    num_workers: 1
+    random_seed: 0
+  CA-GREEDY:
+    lambda_b: 1.0
+    lambda_r: 0.5
+    lambda_c: 0.5
+    lookahead_k: 5
+    allow_skip_negative: false
