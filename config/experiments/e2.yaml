@@ -1,0 +1,41 @@
+id: E2
+sizes:
+- 50
+- 100
+- 200
+- 500
+- 1000
+- 2000
+- 5000
+seeds:
+- 2000
+- 2001
+- 2002
+- 2003
+- 2004
+repeats: 1
+studies:
+- kind: extended
+  algorithms:
+  - NAIVE-GREEDY
+  - CA-GREEDY
+  - ILP-EXACT
+- kind: simplified
+  algorithms:
+  - NAIVE-GREEDY
+  - CA-GREEDY
+  - ILP-EXACT
+  - WIS-DP
+solver_options:
+  ILP-EXACT:
+    time_limit_s: 30.0
+    deterministic_time_limit: 1.0
+    num_workers: 1
+    random_seed: 0
+  CA-GREEDY:
+    lambda_b: 1.0
+    lambda_r: 0.5
+    lambda_c: 0.5
+    lookahead_k: 5
+    allow_skip_negative: false
+stop_ilp_after_limit: true

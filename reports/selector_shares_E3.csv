@@ -1,0 +1,6 @@
+kind,size,knob,chosen_algorithm,count,total,share
+extended,100,"{""assets_per_corridor"":2}",ILP-EXACT,30,30,1.0
+extended,100,"{""assets_per_corridor"":3}",ILP-EXACT,30,30,1.0
+extended,100,"{""assets_per_corridor"":4}",ILP-EXACT,30,30,1.0
+extended,100,"{""assets_per_corridor"":6}",ILP-EXACT,30,30,1.0
+extended,100,"{""assets_per_corridor"":8}",ILP-EXACT,30,30,1.0

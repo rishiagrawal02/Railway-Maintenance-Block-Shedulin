@@ -172,6 +172,7 @@ def run_selected(
     config: dict[str, Any] | None = None,
     threshold: float | None = None,
     threshold_path: str | Path | None = None,
+    solver_options: dict[str, dict[str, Any]] | None = None,
     **algo_kwargs: Any,
 ) -> AlgoResult:
     """Select the optimal algorithm, run it, and store decision in AlgoResult.meta."""
@@ -182,6 +183,7 @@ def run_selected(
         threshold_path=threshold_path,
     )
 
+    algo_kwargs = {**(solver_options or {}).get(decision.algorithm, {}), **algo_kwargs}
     if decision.algorithm == "WIS-DP":
         res = solve_wis_dp(instance, **algo_kwargs)
     elif decision.algorithm == "ILP-EXACT":
