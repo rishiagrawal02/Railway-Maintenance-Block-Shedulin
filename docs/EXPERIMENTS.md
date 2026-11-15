@@ -44,3 +44,37 @@ automatically if the process exits. Do not hand-edit completed CSV rows.
 
 Evaluation seeds are restricted to 2000–2099; the committed E1/E3 grids use
 2000–2029 and E2 uses 2000–2004. Calibration inputs are never accepted.
+
+## Repeats and analysis
+
+After the first three grids, rerun all three with `--output-root results/repeat`.
+Run these serially as well. Then generate and verify the report:
+
+```powershell
+python scripts/make_report.py --results-root results --repeat-root results/repeat
+```
+
+The report refuses missing/duplicate grid keys, input-hash disagreement, errors,
+constraint violations, negative gaps, incompatible repeat provenance, or changed
+repeat objectives/statuses. Omit `--repeat-root` only for an uncertified exploratory
+report. Runtime is deliberately excluded from reproducibility comparisons.
+
+For the fresh-clone E1 check, clone the experiment commit into a separate directory,
+set `PYTHONPATH` to that clone's `src` (so an editable installation cannot resolve
+the original checkout), and run the E1 command from the clone with an absolute
+`--output-root` pointing at `results/repeat` in the original checkout. Use the same
+Python and OR-Tools versions recorded in the first run. Do not run another copy
+concurrently with a timing study. This is a fresh-checkout repeat on the same
+machine, not independent hardware replication.
+
+Committed outputs are `summary_E1.csv`–`summary_E3.csv`, `paired_E*.csv`,
+`seed_halves_E*.csv`, `runtime_slopes.csv`, `selector_shares_E3.csv`,
+`phase9_audit.json`, `phase9_analysis.md` and four small PNGs. Every plotted point
+has its sample count in the summary tables. Sample standard deviation is missing
+for a single observation; cells with no usable result remain missing. Zero
+reference/best-observed objectives have undefined gap/ratio, not fabricated zeros.
+
+`objective_ratio` means objective divided by the best observed valid objective on
+the same instance. It is never labeled an optimality gap. True gaps require an
+ILP `OPTIMAL` reference, or WIS-DP for simplified instances. The selector's own
+claim of optimality is not used as an independent reference.

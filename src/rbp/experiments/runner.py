@@ -245,8 +245,12 @@ def _run_grid(cfg: dict[str, Any], directory: Path) -> Path:
                                         "config": cfg["selector_config"],
                                         "threshold": cfg["selector_threshold"],
                                     }
-                                rec = run_algorithm(algorithm, instance,
-                                                    repeats=cfg["repeats"], **options)
+                                try:
+                                    rec = run_algorithm(algorithm, instance,
+                                                        repeats=cfg["repeats"], **options)
+                                except Exception as exc:
+                                    rec = failure_record(algorithm, size, seed,
+                                                         f"{type(exc).__name__}: {exc}")
                             if (algorithm == "ILP-EXACT" and not rec.optimal
                                     and cfg.get("stop_ilp_after_limit", False)):
                                 stopped.add((kind, knob, seed))

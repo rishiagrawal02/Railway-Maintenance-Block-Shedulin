@@ -28,6 +28,19 @@ ruff check .
 streamlit run app/streamlit_app.py
 ```
 
+### 4. Reproduce the experiments
+```bash
+python -m rbp.experiments.runner config/experiments/e1.yaml --dry-run
+python -m rbp.experiments.runner config/experiments/e1.yaml
+python -m rbp.experiments.runner config/experiments/e2.yaml
+python -m rbp.experiments.runner config/experiments/e3.yaml
+python scripts/make_report.py
+```
+
+See [experiment instructions](docs/EXPERIMENTS.md) for resume, independent repeats,
+solver budgets and provenance. Raw `results/` files are ignored; compact summaries
+and figures live in `reports/`.
+
 ## Architecture
 - `src/rbp/models`: Immutable domain entities (`Task`, `Corridor`, `Resource`, `Timetable`, `Instance`, `Schedule`).
 - `src/rbp/io`: Instance validation, JSON & CSV serialization.
