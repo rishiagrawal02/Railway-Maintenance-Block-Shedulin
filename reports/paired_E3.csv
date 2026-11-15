@@ -1,0 +1,6 @@
+kind,size,knob,pairs,difference_mean,difference_std,wins,ties,losses
+extended,100,"{""assets_per_corridor"":2}",30,36.1,54.68678841901586,18,8,4
+extended,100,"{""assets_per_corridor"":3}",30,34.13333333333333,54.78341891946638,19,8,3
+extended,100,"{""assets_per_corridor"":4}",30,45.46666666666667,45.92777938829865,21,8,1
+extended,100,"{""assets_per_corridor"":6}",30,37.6,43.064986978382755,18,11,1
+extended,100,"{""assets_per_corridor"":8}",30,56.13333333333333,50.89389458222986,24,4,2

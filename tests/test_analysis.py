@@ -142,6 +142,18 @@ def test_full_report_figures_audit_and_repeat(tmp_path):
         assert not pd.read_csv(output / f"summary_{name}.csv").empty
     assert (output / "phase9_analysis.md").stat().st_size > 1000
     assert load_runs(root / "E1" / "runs.csv").violations.sum() == 0
+    # Shortened verification is explicit, never advertised as a complete repeat.
+    repeat_e2 = repeat / "E2" / "runs.csv"
+    lines = repeat_e2.read_text().splitlines()
+    repeat_e2.write_text("\n".join(lines[:5]) + "\n")
+    (repeat / "E3" / "runs.csv").unlink()
+    partial = make_report(root, output, repeat, allow_partial_repeat=True)
+    assert partial["reproducibility"]["E1"]["complete"]
+    assert partial["reproducibility"]["E2"]["status"] == "PARTIAL"
+    assert partial["reproducibility"]["E2"]["rows_compared"] == 4
+    assert partial["reproducibility"]["E3"]["status"] == "NOT_RUN"
+    with pytest.raises(ValueError, match="Incomplete grid"):
+        make_report(root, output, repeat)
     # A report must not silently bless an incomplete grid.
     path = root / "E1" / "runs.csv"
     lines = path.read_text().splitlines()

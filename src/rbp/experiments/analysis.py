@@ -187,7 +187,7 @@ def compare_runs(first: pd.DataFrame, second: pd.DataFrame) -> dict:
     }
 
 
-def audit_grid(path: Path, data: pd.DataFrame) -> dict:
+def audit_grid(path: Path, data: pd.DataFrame, allow_incomplete: bool = False) -> dict:
     """Reject incomplete grids rather than publishing partial experiments as complete."""
     meta = json.loads((path.parent / "meta.json").read_text())
     cfg = meta["config"]
@@ -197,11 +197,13 @@ def audit_grid(path: Path, data: pd.DataFrame) -> dict:
         for k in s["knobs"] for seed in cfg["seeds"]
     }
     actual = set(data[list(KEY)].itertuples(index=False, name=None))
-    if actual != expected:
+    if actual - expected or (actual != expected and not allow_incomplete):
         raise ValueError(f"Incomplete grid {path}: missing={len(expected - actual)}, "
                          f"unexpected={len(actual - expected)}")
     return {
-        "rows": len(data), "errors": int(data.status.eq("ERROR").sum()),
+        "rows": len(data), "expected_rows": len(expected),
+        "complete": actual == expected, "missing_rows": len(expected - actual),
+        "errors": int(data.status.eq("ERROR").sum()),
         "violations": int(data.violations.sum()), "anomalies": int(data.anomaly.sum()),
         "timeouts": int(data.status.eq("TIMEOUT").sum()),
         "skipped": int(data.status.eq("SKIPPED_LIMIT").sum()),
@@ -280,7 +282,8 @@ def make_figures(tables: dict[str, pd.DataFrame], output: Path) -> None:
 
 
 def make_report(results_root: str | Path = "results", output: str | Path = "reports",
-                repeat_root: str | Path | None = None) -> dict:
+                repeat_root: str | Path | None = None,
+                allow_partial_repeat: bool = False) -> dict:
     """Write compact tables, figures and an evidence-linked report for complete grids."""
     root, output = Path(results_root), Path(output)
     output.mkdir(parents=True, exist_ok=True)
@@ -302,14 +305,28 @@ def make_report(results_root: str | Path = "results", output: str | Path = "repo
             tables["selector"].to_csv(output / "selector_shares_E3.csv", index=False)
         if repeat_root is not None:
             repeat_path = Path(repeat_root) / name / "runs.csv"
+            if not repeat_path.exists() and allow_partial_repeat:
+                repetitions[name] = {
+                    "complete": False, "status": "NOT_RUN", "passed": False,
+                    "rows_first": len(data), "rows_second": 0, "rows_compared": 0,
+                }
+                continue
             repeated = enrich(load_runs(repeat_path))
-            repeat_audit = audit_grid(repeat_path, repeated)
+            repeat_audit = audit_grid(repeat_path, repeated, allow_partial_repeat)
             if any(repeat_audit[k] for k in ("errors", "violations", "anomalies")):
                 raise ValueError(f"Repeat {name} failed validation")
             for key in ("config_hash", "source_hash", "python_version", "ortools_version"):
                 if repeat_audit[key] != audits[name][key]:
                     raise ValueError(f"Repeat {name} changed {key}")
-            repetitions[name] = compare_runs(data, repeated)
+            compared = data
+            if not repeat_audit["complete"]:
+                compared = data.merge(repeated[list(KEY)], on=list(KEY), validate="one_to_one")
+            repetitions[name] = compare_runs(compared, repeated)
+            repetitions[name].update(
+                complete=repeat_audit["complete"], rows_first=len(data),
+                rows_compared=len(compared),
+                status="COMPLETE" if repeat_audit["complete"] else "PARTIAL",
+            )
             repetitions[name]["repeat_git_hash"] = repeat_audit["git_hash"]
             repetitions[name]["repeat_git_dirty"] = repeat_audit["git_dirty"]
             if not repetitions[name]["passed"]:
@@ -390,11 +407,19 @@ def _write_report(output: Path, tables: dict, evidence: dict) -> None:
     ]
     for name in ("E1", "E2", "E3"):
         check = evidence["reproducibility"].get(name)
-        lines.append(f"- {name}: " + (
-            f"{check['rows_first']} rows repeated; objectives, instance hashes, statuses, "
-            "chosen algorithms, coverage and schedule counts identical."
-            if check else "independent repeat not supplied; completion is not certified."
-        ))
+        if not check or not check.get("rows_compared", 0):
+            lines.append(f"- {name}: not repeated; no reproducibility claim for this study.")
+        else:
+            scope = "complete" if check["complete"] else "PARTIAL"
+            lines.append(
+                f"- {name}: {scope} repeat, {check['rows_compared']}/{check['rows_first']} "
+                "rows compared; objectives, instance hashes, statuses, chosen algorithms, "
+                "coverage and schedule counts identical."
+            )
+    if any(not c.get("complete", False) for c in evidence["reproducibility"].values()):
+        lines += ["", "**Verification scope:** The user requested a shorter verification run. "
+                  "Remaining repeat runs were stopped; primary E1/E2/E3 grids are complete. "
+                  "Partial repeat agreement is not evidence of a full-study repeat."]
     lines += [
         "", "Seed halves split the sorted seeds at the midpoint (15/15 for E1 and E3, "
         "2/3 for E2). [E1 halves](seed_halves_E1.csv), [E2 halves](seed_halves_E2.csv), "

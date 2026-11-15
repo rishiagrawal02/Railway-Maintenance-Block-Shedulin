@@ -54,6 +54,14 @@ Run these serially as well. Then generate and verify the report:
 python scripts/make_report.py --results-root results --repeat-root results/repeat
 ```
 
+The delivered run uses `--allow-partial-repeat` because the user requested shorter
+verification after the full primary grids and fresh-clone E1 repeat completed.
+It explicitly marks E2's 99-row repeat as partial and E3 as not repeated. This
+flag never relaxes completeness, error or constraint checks on the primary grids.
+The saved measurements use commit `549e823`; the later reporting-only change adds
+partial-repeat labels. For resuming those original raw measurements, use that
+commit's runner so its source fingerprint matches, rather than editing provenance.
+
 The report refuses missing/duplicate grid keys, input-hash disagreement, errors,
 constraint violations, negative gaps, incompatible repeat provenance, or changed
 repeat objectives/statuses. Omit `--repeat-root` only for an uncertified exploratory
