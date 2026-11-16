@@ -2,6 +2,10 @@
 
 Places tasks in descending priority order at their earliest feasible start time.
 Uses no look-ahead and no resource reasoning (Decision D12: single-pass dependency rule).
+
+Complexity: O(n log n + n*(G + m*F + P) + n^2) after state initialization;
+G is event generation, m candidates, F feasibility, P placement. Linear instance
+lookups matter: see docs/COMPLEXITY.md for full dimension-dependent bounds.
 """
 
 from __future__ import annotations

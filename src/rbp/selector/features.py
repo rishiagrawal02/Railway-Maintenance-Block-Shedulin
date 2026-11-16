@@ -223,7 +223,10 @@ def feature_f5_corridor_utilization(instance: Instance) -> float:
 
 
 def compute_features(instance: Instance, n_ref: int = DEFAULT_N_REF) -> Features:
-    """Compute all 5 normalized complexity features for an instance."""
+    """Compute features in O(n log n + R*n + A + T + c); see docs/COMPLEXITY.md.
+
+    For fixed resource counts and linear auxiliary inputs this is O(n log n).
+    """
     return Features(
         f1_size=feature_f1_size(instance, n_ref=n_ref),
         f2_conflict_density=feature_f2_conflict_density(instance),

@@ -7,6 +7,10 @@ Schedules tasks using look-ahead reasoning:
   - Conflict creation penalty: C (reduction in feasible starts)
 
 Score = w_t - lambda_b * B + lambda_r * w_t * R - lambda_c * C
+
+No optimality guarantee. Each candidate scores k lookahead tasks with up to m
+feasibility checks each; candidate regeneration and linear instance lookups add
+cost. Remaining-task sorting costs O(n^2 log n) overall. See docs/COMPLEXITY.md.
 """
 
 from __future__ import annotations
