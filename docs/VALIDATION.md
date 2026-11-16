@@ -45,8 +45,9 @@ Python 3.12 was unavailable, and dependencies were not installed. Its 30 collect
 errors are not a completed application correctness evaluation.
 
 On 2026-11-16 the user explicitly waived the independent teammate verification.
-No second-person success is inferred from local checks. Final release remains
-pending final CI and disposition of the additional qualifications in the
+No second-person success is inferred from local checks. The user also explicitly accepted the ILP search-budget qualification, non-timing
+reproduction criterion and shortened E2/E3 repeat scope on 2026-11-16. Final release
+is gated by final CI as recorded in the
 [final checklist](FINAL_RELEASE_CHECKLIST.md). Follow [the verification procedure](RELEASE_VERIFICATION.md).
 
 Byte-identical timing summaries are not promised. The reproduction script compares
@@ -54,6 +55,6 @@ non-timing summaries and audits primary/repeat outcomes; platform-dependent solv
 budget differences fail that check and require investigation. Full E2/E3 repeat
 certification cannot be inherited from the partial Phase 9 evidence.
 
-The milestone's byte-identical-summary requirement needs an explicitly accepted
-exception for runtime columns. The implemented non-timing comparison is the
-proposed criterion; it does not silently certify that original requirement.
+The user explicitly accepted the runtime-column exception on 2026-11-16.
+The implemented non-timing comparison is the accepted criterion; no byte-identical
+timing or complete E2/E3 repeat certification is claimed.

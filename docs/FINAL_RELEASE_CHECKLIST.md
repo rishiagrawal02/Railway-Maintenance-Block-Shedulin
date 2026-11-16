@@ -1,6 +1,6 @@
 # Final release checklist and traceability
 
-Release candidate: 1.0.0. This record distinguishes measured evidence from scope
+Release: 1.0.0, subject to the final CI/tag gate below. This record distinguishes measured evidence from scope
 exceptions. A historical measurement is not described as a fresh experiment run.
 
 ## Functional requirements
@@ -48,13 +48,13 @@ remove backend scheduling, comparisons or selection reasoning.
 | Item | Disposition |
 | --- | --- |
 | Independent teammate verification | Waived explicitly by user on 2026-11-16 |
-| E2/E3 full repeat certification | Not claimed; prior user-requested shortened Phase 9 verification retained, pending confirmation for this release |
-| Byte-identical timing CSVs | Not a valid cross-machine criterion; non-timing comparison implemented, pending explicit exception acceptance |
-| ILP time limit | Solver search budget; preprocessing and scheduling overhead are outside it, pending explicit exception acceptance |
+| E2/E3 full repeat certification | Not claimed; prior user-requested shortened Phase 9 verification retained, accepted explicitly by user on 2026-11-16 |
+| Byte-identical timing CSVs | Not a valid cross-machine criterion; non-timing comparison implemented, accepted explicitly by user on 2026-11-16 |
+| ILP time limit | Solver search budget; preprocessing and scheduling overhead are outside it, accepted explicitly by user on 2026-11-16 |
 | Authentication / authorization | Out of scope; public user accounts require a new phase and unauthorized-access tests |
 | Hosted deployment | Setup documented; no claim of a live verified Community Cloud deployment |
 | Existing personal checkout edits | Preserved; final main cleanliness will be checked in a separate clean release worktree |
-| Final CI | Pending green run on the release commit before tagging v1.0.0 |
+| Final CI | Must pass on the main merge before tagging v1.0.0; run URL recorded in the delivery report |
 
 Time-limited results are marked non-optimal. Genuine gaps require a validated
 proven optimum; best-observed objective ratios are explicitly relative comparisons.
@@ -66,3 +66,7 @@ Do not treat this document as a claim that a tag exists before it is pushed.
 Record the final branch/merge hashes, CI run URL and tag outcomes in the delivery
 report. `cp-11.1`, `phase-11-complete` and `v1.0.0` are reserved until the applicable
 release conditions above are satisfied or explicitly waived.
+
+Final candidate implementation: `196ca8769be13bb8c084d6ae666a7b2ec673328e`.
+[Candidate CI run](https://github.com/rishiagrawal02/Railway-Maintenance-Block-Shedulin/actions/runs/43848968548).
+The final release tag is created only after the main merge CI passes.
