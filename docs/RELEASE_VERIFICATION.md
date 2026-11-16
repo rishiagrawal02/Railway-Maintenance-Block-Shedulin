@@ -1,5 +1,9 @@
 # Independent release verification
 
+The user waived this independent teammate requirement on 2026-11-16. This
+procedure remains available for optional external audits; it is no longer a
+blocking release gate. See [accepted release scope](FINAL_RELEASE_CHECKLIST.md).
+
 Use a fresh clone, not an existing development environment. Save logs outside the
 repository. Do not change code, weaken tests, or modify measurements to make checks
 pass. A blocked prerequisite is BLOCKED; an unattempted check is NOT TESTED.

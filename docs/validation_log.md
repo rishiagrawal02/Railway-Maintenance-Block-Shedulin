@@ -2,6 +2,16 @@
 
 This document records formal correctness gate results across development phases.
 
+## Final 1.0.0 implementation — 2026-11-16
+
+- Revision: `196ca8769be13bb8c084d6ae666a7b2ec673328e`.
+- Clean-clone Windows/Python 3.12.8 full suite: **280 passed in 229.84s**.
+- [Linux/Python 3.12 CI](https://github.com/rishiagrawal02/Railway-Maintenance-Block-Shedulin/actions/runs/43848968548):
+  full suite, standalone 100/100 gate, release hygiene and app health all passed.
+- Independent teammate verification waived by the user. Search-budget/timing
+  qualifications and earlier shortened E2/E3 repeat scope explicitly accepted.
+- [Final checklist](FINAL_RELEASE_CHECKLIST.md) records the limits of these claims.
+
 ## Phase 11 local candidate verification — 2026-11-16
 
 - Revision: `590bf1e01bbd66326555888db40cbe059a1e9d50` on `phase-11-release`.

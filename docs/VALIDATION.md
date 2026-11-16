@@ -12,6 +12,20 @@ later revision was retested. [Original gate log](validation_log.md).
 
 ## Phase 11 candidate
 
+Final implementation verification on 2026-11-16 at
+`196ca8769be13bb8c084d6ae666a7b2ec673328e`:
+
+- Fresh-clone environment updated to the final candidate: **280 passed in 229.84s**.
+- [GitHub CI](https://github.com/rishiagrawal02/Railway-Maintenance-Block-Shedulin/actions/runs/43848968548)
+  passed on Linux/Python 3.12: installation, dependency checks, lint, full suite
+  including slow tests, 100-instance gate, release hygiene and application health.
+- All six algorithm registry choices ran on the same small simplified instance,
+  each returning objective 135 and zero violations.
+- Static inspection found zero `eval`/`exec` calls or pickle imports in `src/` and `app/`.
+- The added regression rejects partial resource availability for WIS-DP and
+  accepts touching availability intervals covering the horizon, matching D8.
+- Final documentation-only changes and merge are gated by CI again before tagging.
+
 Local verification on 2026-11-16 used a separate clone at
 `590bf1e01bbd66326555888db40cbe059a1e9d50` and a newly created Python 3.12.8
 virtual environment on Windows. It did not reuse the development environment's

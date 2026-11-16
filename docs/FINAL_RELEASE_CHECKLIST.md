@@ -30,6 +30,9 @@ remove backend scheduling, comparisons or selection reasoning.
   predicate/validator fuzz agreement and golden hashes.
 - The final candidate adds a regression rejecting resource outages in the
   simplified-case predicate, matching D8. Final CI must include this regression.
+- Final implementation `196ca87`: **280 passed** in the clean-clone Python 3.12.8
+  environment; [candidate CI](https://github.com/rishiagrawal02/Railway-Maintenance-Block-Shedulin/actions/runs/43848968548)
+  is green for installation, lint, the full suite, the gate, hygiene and app health.
 - [Historical Phase 9 audit](../reports/phase9_audit.json): E1/E2/E3 primary grids
   have zero violations/anomalies. E1's 1080-row repeat matched objectives;
   E2's repeat is partial and E3's repeat was not run.
@@ -53,7 +56,7 @@ remove backend scheduling, comparisons or selection reasoning.
 | ILP time limit | Solver search budget; preprocessing and scheduling overhead are outside it, accepted explicitly by user on 2026-11-16 |
 | Authentication / authorization | Out of scope; public user accounts require a new phase and unauthorized-access tests |
 | Hosted deployment | Setup documented; no claim of a live verified Community Cloud deployment |
-| Existing personal checkout edits | Preserved; final main cleanliness will be checked in a separate clean release worktree |
+| Existing personal checkout edits | Preserved; main is maintained in a separate clean release worktree |
 | Final CI | Must pass on the main merge before tagging v1.0.0; run URL recorded in the delivery report |
 
 Time-limited results are marked non-optimal. Genuine gaps require a validated
