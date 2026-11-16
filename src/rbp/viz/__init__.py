@@ -91,43 +91,12 @@ def _figure(height=3.6):
 
 
 def timeline(instance, rows, corridor=None, occupancy=True):
+    from rbp.viz.gantt import gantt_figure
+
     selected = [r for r in rows if corridor is None or r["corridor_id"] == corridor]
-    lanes = sorted({(r["corridor_id"], r["asset_id"]) for r in selected})
-    lanes = lanes[:30]
-    fig, ax = _figure(max(3.6, len(lanes) * 0.32))
-    for index, lane in enumerate(lanes):
-        if occupancy:
-            for tt in instance["timetable"]:
-                if tt["corridor_id"] == lane[0]:
-                    for interval in tt["intervals"]:
-                        ax.broken_barh(
-                            [(interval["start"], interval["end"] - interval["start"])],
-                            (index - 0.35, 0.7),
-                            facecolors="#39465C",
-                            alpha=0.65,
-                        )
-        for row in selected:
-            if (row["corridor_id"], row["asset_id"]) == lane and row["start"] is not None:
-                ax.broken_barh(
-                    [(row["start"], row["duration"])],
-                    (index - 0.27, 0.54),
-                    facecolors=PALETTE[index % len(PALETTE)],
-                )
-                if len(selected) <= 60:
-                    ax.text(
-                        row["start"] + 2,
-                        index,
-                        f"T{row['id']}",
-                        color="#0B1220",
-                        va="center",
-                        fontsize=7,
-                        clip_on=True,
-                    )
-    ax.set_yticks(range(len(lanes)), [f"C{c} / A{a}" for c, a in lanes])
-    ax.set_xlim(0, instance["horizon"])
-    ax.set_xlabel("Minutes from horizon start · gray = train occupancy")
-    ax.invert_yaxis()
-    return fig
+    subset = {**instance, "tasks": selected}
+    starts = {r["id"]: r["start"] for r in selected if r["start"] is not None}
+    return gantt_figure(subset, starts, show_trains=occupancy)[0]
 
 
 def bars(labels, values, xlabel):

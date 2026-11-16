@@ -1,5 +1,6 @@
 """RAILOPT: presentation-only Streamlit shell over rbp.api."""
 
+import matplotlib.pyplot as plt
 import pandas as pd
 import streamlit as st
 
@@ -26,6 +27,13 @@ def cached_run(instance_hash, instance, algorithm, config):
 @st.cache_data(max_entries=32, show_spinner=False)
 def cached_selection(instance):
     return api.select(instance)
+
+
+def render_figure(fig):
+    try:
+        st.pyplot(fig)
+    finally:
+        plt.close(fig)
 
 
 def replace_instance(instance):
@@ -80,9 +88,9 @@ def overview(instance, result):
     with left, st.container(border=True):
         st.subheader("Maintenance timeline")
         if result:
-            st.pyplot(viz.timeline(instance, api.schedule_rows(instance, result)))
+            render_figure(viz.timeline(instance, api.schedule_rows(instance, result)))
             st.caption(
-                "Showing up to 30 asset lanes. Explore corridor details in Scheduling Workspace."
+                "Bars show criticality; inspect numeric criticality in Scheduling Workspace."
             )
         else:
             st.info("Your maintenance timeline will appear after the first run.")
@@ -132,14 +140,14 @@ def dataset(instance, result):
         st.subheader("Tasks by corridor")
         if instance["tasks"]:
             counts = pd.DataFrame(instance["tasks"]).groupby("corridor_id").size()
-            st.pyplot(viz.bars(counts.index, counts.values, "Task count"))
+            render_figure(viz.bars(counts.index, counts.values, "Task count"))
         else:
             st.info("This instance has no tasks.")
     with right, st.container(border=True):
         st.subheader("Resource capacities")
         resources = instance["resources"]
         if resources:
-            st.pyplot(
+            render_figure(
                 viz.bars(
                     [r["type"] for r in resources],
                     [r["capacity"] for r in resources],
@@ -166,12 +174,12 @@ def workspace(instance, result):
         occupancy = st.checkbox("Show train occupancy", value=True)
         schedule_tab, resource_tab = st.tabs(["Schedule timeline", "Resource utilization"])
         with schedule_tab:
-            st.pyplot(
+            render_figure(
                 viz.timeline(instance, rows, None if corridor == "All" else corridor, occupancy)
             )
-            st.caption("Up to 30 asset lanes per view; table below contains every task.")
+            st.caption("Every asset lane is shown. Gray shading indicates train occupancy.")
         with resource_tab:
-            st.pyplot(viz.resource_chart(instance, rows))
+            render_figure(viz.resource_chart(instance, rows))
     with right, st.container(border=True):
         st.subheader("Task inspector")
         task_id = st.selectbox("Task ID", [task["id"] for task in rows])
@@ -180,6 +188,7 @@ def workspace(instance, result):
         st.write(f"Corridor {row['corridor_id']} · Asset {row['asset_id']}")
         st.write(f"Allowed window: {row['window_start']}–{row['window_end']} min")
         st.write(f"Duration: {row['duration']} min")
+        st.write(f"Criticality: {row['criticality']}")
         if row["start"] is not None:
             st.write(f"Scheduled: {row['start']}–{row['end']} min")
         st.write("Resource demands", row["demands"])
@@ -199,6 +208,13 @@ def intelligence(instance, result):
     left, right = st.columns([1.5, 1])
     with left, st.container(border=True):
         st.subheader("Instance complexity profile")
+        render_figure(
+            viz.bars(
+                list(decision["features"]),
+                list(decision["features"].values()),
+                "Normalized feature value",
+            )
+        )
         for name, value in decision["features"].items():
             st.write(f"{name.replace('_', ' ').title()} · {value:.4f}")
             st.progress(min(1.0, max(0.0, value)))
@@ -216,15 +232,20 @@ def intelligence(instance, result):
 
 
 def analytics(instance, result, config):
-    available = [item["name"] for item in api.list_algorithms(instance) if item["enabled"]]
+    available = [item["name"] for item in api.list_algorithms(instance)]
     selected = st.multiselect(
         "Algorithms to compare", available, default=["NAIVE-GREEDY", "CA-GREEDY"]
     )
     if st.button("Compare algorithms", type="primary", disabled=not selected):
         with st.spinner("Comparing algorithms on the same instance…"):
-            st.session_state.comparison = [
-                cached_run(api.instance_hash(instance), instance, name, config) for name in selected
-            ]
+            st.session_state.comparison = api.compare(
+                instance,
+                selected,
+                config,
+                run_fn=lambda data, name, options: cached_run(
+                    api.instance_hash(data), data, name, options
+                ),
+            )
     comparison = st.session_state.comparison
     if not comparison:
         st.info(
@@ -232,6 +253,10 @@ def analytics(instance, result, config):
         )
         return
     table = pd.DataFrame([entry["metrics"] for entry in comparison])
+    for entry in comparison:
+        if entry.get("error"):
+            st.warning(f"{entry['metrics']['algo']}: {entry['error']}")
+    chart_data = table.dropna(subset=["objective"])
     for columns, specs in [
         (st.columns(2), [("runtime_s", "Runtime (seconds)"), ("objective", "Priority objective")]),
         (
@@ -242,7 +267,7 @@ def analytics(instance, result, config):
         for column, (field, label) in zip(columns, specs):
             with column, st.container(border=True):
                 st.subheader(label)
-                st.pyplot(viz.bars(table["algo"], table[field], label))
+                render_figure(viz.bars(chart_data["algo"], chart_data[field], label))
     st.subheader("Measured comparison")
     st.dataframe(table, hide_index=True, width="stretch")
     st.caption(
@@ -349,7 +374,12 @@ def main():
         blocked = not eligibility[algorithm]["enabled"]
         if blocked:
             st.warning(eligibility[algorithm]["reason"])
-        seconds = st.slider("ILP time limit (seconds)", 1, int(caps["ilp_time_limit_s"]), 5)
+        seconds = st.slider(
+            "ILP time limit (seconds)",
+            1,
+            int(caps["ilp_time_limit_s"]),
+            int(caps["ilp_time_limit_s"]),
+        )
         config = {"time_limit_s": seconds}
         if upload_invalid:
             st.caption(

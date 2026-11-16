@@ -209,9 +209,60 @@ def run(instance, algorithm="CA-GREEDY", config=None):
     }
 
 
-def compare(instance, algorithms=None, config=None):
+def compare(instance, algorithms=None, config=None, *, run_fn=None):
+    """Keep one row per algorithm; only verified exact results supply an optimum."""
     names = algorithms if algorithms is not None else ["NAIVE-GREEDY", "CA-GREEDY"]
-    return [run(instance, name, config) for name in names]
+    execute = run_fn or run
+    eligibility = {item["name"]: item for item in list_algorithms(instance)}
+    results = []
+    for name in names:
+        try:
+            if name in eligibility and not eligibility[name]["enabled"]:
+                raise APIError(eligibility[name]["reason"])
+            result = execute(instance, name, config)
+            result = {**result, "metrics": {**result["metrics"], "gap": None}}
+        except Exception as exc:
+            status = (
+                "NOT_APPLICABLE"
+                if name in eligibility and not eligibility[name]["enabled"]
+                else "ERROR"
+            )
+            result = {
+                "instance_hash": instance_hash(instance),
+                "error": str(exc),
+                "metrics": {
+                    "algo": name,
+                    "status": status,
+                    "objective": None,
+                    "coverage": None,
+                    "runtime_s": None,
+                    "violations": None,
+                    "gap": None,
+                    "scheduled": None,
+                    "optimal": False,
+                },
+            }
+        results.append(result)
+    optima = [
+        r["metrics"]["objective"]
+        for r in results
+        if r["metrics"].get("optimal")
+        and r.get("validation", {}).get("valid")
+        and r["metrics"].get("status") == "OK"
+        and r.get("instance_hash") == instance_hash(instance)
+    ]
+    optimum = optima[0] if optima and len(set(optima)) == 1 else None
+    for result in results:
+        metrics = result["metrics"]
+        if optimum is not None and result.get("validation", {}).get("valid"):
+            metrics["gap"] = (
+                (optimum - metrics["objective"]) / optimum
+                if optimum > 0
+                else 0.0
+                if metrics["objective"] == 0
+                else None
+            )
+    return results
 
 
 def schedule_rows(instance, result):
