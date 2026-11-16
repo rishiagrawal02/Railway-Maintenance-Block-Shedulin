@@ -4,10 +4,10 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "rbp"
-version = "0.1.0"
+version = "1.0.0"
 description = "Adaptive Hybrid Scheduling for Railway Maintenance Block Planning"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.12"
 dependencies = [
     "pytest>=9.0",
     "pytest-cov>=7.0",

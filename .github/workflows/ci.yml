@@ -1,15 +1,41 @@
 name: ci
 
-on: [push, pull_request]
+on: [push, pull_request, workflow_dispatch]
+
+permissions:
+  contents: read
 
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
-      - run: pip install -r requirements.txt && pip install -e .
-      - run: ruff check .
-      - run: pytest -m 'not slow'
+          python-version: '3.12'
+          cache: pip
+      - name: Install pinned dependencies and local package
+        run: python -m pip install -r requirements.txt
+      - run: python -m pip check
+      - run: python -m ruff check .
+      - name: Full suite including slow tests
+        run: python -m pytest -ra
+      - name: 100-instance correctness gate
+        run: python scripts/gate_wis.py
+      - name: Release hygiene
+        run: python scripts/release_check.py
+      - name: Clean-environment application health
+        shell: bash
+        run: |
+          python -m streamlit run app/streamlit_app.py --server.port 8501 > /tmp/railopt-streamlit.log 2>&1 &
+          app_pid=$!
+          trap 'kill "$app_pid" 2>/dev/null || true' EXIT
+          for attempt in {1..30}; do
+            if curl --fail --silent http://localhost:8501/_stcore/health | grep -qx ok; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/railopt-streamlit.log
+          exit 1

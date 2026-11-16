@@ -36,6 +36,17 @@ def is_simplified(instance: Instance) -> bool:
     if res.capacity != 1:
         return False
 
+    # WIS-DP does not model resource outages. Require coverage of the full horizon.
+    covered_until = 0
+    for interval in sorted(res.availability, key=lambda iv: iv.start):
+        if interval.start > covered_until:
+            return False
+        covered_until = max(covered_until, interval.end)
+        if covered_until >= instance.horizon:
+            break
+    if covered_until < instance.horizon:
+        return False
+
     # Check timetable has no blocking trains
     for tt in instance.timetable:
         if len(tt.intervals) > 0:

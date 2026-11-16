@@ -56,6 +56,13 @@ def check_files(files):
     for name in files:
         if name.startswith(("results/", "data/generated/")):
             errors.append(f"Generated output is tracked: {name}")
+        if any(
+            part in {".venv", "venv", "__pycache__", ".pytest_cache", ".ruff_cache"}
+            for part in Path(name).parts
+        ):
+            errors.append(f"Environment or cache file is tracked: {name}")
+        if len(files[name]) > 5 * 1024 * 1024:
+            errors.append(f"Tracked file exceeds the 5 MB release cap: {name}")
         if Path(name).name in (".env", "secrets.toml", "id_rsa", "id_ed25519"):
             errors.append(f"Sensitive filename is tracked: {name}")
     try:
@@ -63,7 +70,7 @@ def check_files(files):
         version = threshold.get("version")
         if type(version) is not int or version < 1:
             errors.append("Threshold version must be an integer >= 1, not a placeholder.")
-    except (KeyError, ValueError, TypeError):
+    except (KeyError, ValueError, TypeError, AttributeError):
         errors.append("Missing or invalid config/threshold.json.")
     try:
         hashes = json.loads(files["tests/data/golden_hashes.json"])

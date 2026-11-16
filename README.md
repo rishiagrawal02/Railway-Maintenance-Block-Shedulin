@@ -157,4 +157,5 @@ and [deployment instructions](https://docs.streamlit.io/deploy/streamlit-communi
 
 Read [complexity derivations](docs/COMPLEXITY.md), [validation evidence](docs/VALIDATION.md)
 and the [independent verification checklist](docs/RELEASE_VERIFICATION.md).
-**Release status: candidate; independent fresh-clone reproduction is pending.**
+**Release status: candidate; teammate verification waived by the user.**
+See the [final release checklist](docs/FINAL_RELEASE_CHECKLIST.md) for CI and scope qualifications.

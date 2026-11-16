@@ -44,10 +44,10 @@ on 2026-11-16 was **BLOCKED**: the release branch/scripts were not published,
 Python 3.12 was unavailable, and dependencies were not installed. Its 30 collection
 errors are not a completed application correctness evaluation.
 
-The release remains **NO-GO for v1.0.0** until independent fresh-clone installation,
-full tests, gate, release hygiene and full reproduction are recorded, or the user
-explicitly accepts written exceptions. No second-person success is inferred from
-agent-run local checks. Follow [the verification procedure](RELEASE_VERIFICATION.md).
+On 2026-11-16 the user explicitly waived the independent teammate verification.
+No second-person success is inferred from local checks. Final release remains
+pending final CI and disposition of the additional qualifications in the
+[final checklist](FINAL_RELEASE_CHECKLIST.md). Follow [the verification procedure](RELEASE_VERIFICATION.md).
 
 Byte-identical timing summaries are not promised. The reproduction script compares
 non-timing summaries and audits primary/repeat outcomes; platform-dependent solver

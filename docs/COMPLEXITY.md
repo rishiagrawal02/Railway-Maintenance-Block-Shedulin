@@ -12,6 +12,8 @@ per task and k lookahead tasks. Hash/dictionary access is expected O(1).
 performs n binary predecessor searches in O(n log n), fills an O(n) DP table and
 reconstructs at most n tasks. Time **O(n log n)** and extra space **O(n)** for the
 simplified-input solver. It is not applicable to extended instances.
+Admission additionally checks resource availability coverage in O(A log A) time;
+the generated simplified family has one availability interval.
 
 ## Shared placement costs
 

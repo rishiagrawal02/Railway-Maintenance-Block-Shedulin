@@ -1,6 +1,7 @@
 """Tests for Weighted Interval Scheduling DP solver (Milestone 4.1)."""
 
 import time
+from dataclasses import replace
 
 import pytest
 
@@ -10,6 +11,19 @@ from rbp.generation.extended import generate_extended
 from rbp.generation.simplified import generate_simplified
 from rbp.models import Corridor, Instance, Interval, Resource, Task
 from rbp.validation import validate_schedule
+
+
+def test_resource_outage_is_not_simplified():
+    instance = generate_simplified(n=5, seed=3)
+    resource = replace(instance.resources[0], availability=(Interval(0, 1),))
+    with pytest.raises(NotSimplifiedError):
+        solve_wis_dp(replace(instance, resources=(resource,)))
+    touching = replace(instance.resources[0],
+                       availability=(Interval(0, 720), Interval(720, 1440)))
+    assert validate_schedule(
+        replace(instance, resources=(touching,)),
+        solve_wis_dp(replace(instance, resources=(touching,))).schedule,
+    ).valid
 
 # ---------------------------------------------------------------------------
 # Fixtures

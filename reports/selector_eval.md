@@ -16,5 +16,8 @@
 | **Majority-Class Baseline** | **100.00%** |
 
 ## Summary
-The calibrated threshold separates instances where exact ILP solving is feasible within the
-deterministic budget from instances that require heuristic routing.
+All 20 evaluation instances belong to the same class. The selector ties the
+majority-class baseline; this sample does not demonstrate discrimination between
+affordable and costly exact instances or an advantage over a constant policy.
+The threshold is a calibrated rule, not a machine-learning model. Historical
+measurements above remain unchanged.
