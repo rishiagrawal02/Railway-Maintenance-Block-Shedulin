@@ -12,7 +12,33 @@ later revision was retested. [Original gate log](validation_log.md).
 
 ## Phase 11 candidate
 
-Implementation and local verification are being recorded on `phase-11-release`.
+Local verification on 2026-11-16 used a separate clone at
+`590bf1e01bbd66326555888db40cbe059a1e9d50` and a newly created Python 3.12.8
+virtual environment on Windows. It did not reuse the development environment's
+editable package. The clone's working tree remained clean.
+
+| Check | Observed result |
+| --- | --- |
+| README installation | `pip install -r requirements.txt` succeeded, including editable `rbp` |
+| Dependency integrity | `pip check`: no broken requirements |
+| Import location | `rbp.__file__` resolved into the new clone |
+| Full pytest, including slow | **279 passed in 209.97 seconds** |
+| Standalone WIS-DP gate | **100/100** |
+| Release checker | Exit 0; 151 indexed files inspected |
+| Repository lint | `ruff check .`: passed |
+| Reproduction script syntax | Git Bash `bash -n scripts/reproduce.sh`: passed |
+| Experiment smoke | E1 dry-run: nine runs, all OK |
+| Clean-environment app health | HTTP 200, response `ok`, port 8503 |
+| Full primary/repeat E1–E3 via reproduction script | Not run in this release verification; pending |
+| Independent second-person reproduction | Pending |
+| Hosted Community Cloud deployment | Not performed |
+
+The full suite includes UI interaction, failure handling, figure cleanup and
+small report-pipeline tests; it is not a substitute for complete experiment grids.
+Later documentation-only commits record this evidence without changing the
+tested implementation. Local environment details were saved under ignored
+`results/release-verification/environment.txt`.
+
 The second-person attempt against `a420a9036d6a926e031ef024bc51231cc16eff8b`
 on 2026-11-16 was **BLOCKED**: the release branch/scripts were not published,
 Python 3.12 was unavailable, and dependencies were not installed. Its 30 collection
@@ -27,3 +53,7 @@ Byte-identical timing summaries are not promised. The reproduction script compar
 non-timing summaries and audits primary/repeat outcomes; platform-dependent solver
 budget differences fail that check and require investigation. Full E2/E3 repeat
 certification cannot be inherited from the partial Phase 9 evidence.
+
+The milestone's byte-identical-summary requirement needs an explicitly accepted
+exception for runtime columns. The implemented non-timing comparison is the
+proposed criterion; it does not silently certify that original requirement.

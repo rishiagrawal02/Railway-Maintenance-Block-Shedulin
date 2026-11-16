@@ -2,6 +2,17 @@
 
 This document records formal correctness gate results across development phases.
 
+## Phase 11 local candidate verification — 2026-11-16
+
+- Revision: `590bf1e01bbd66326555888db40cbe059a1e9d50` on `phase-11-release`.
+- Separate clean clone and new Python 3.12.8 venv on Windows; README install passed.
+- Full suite, including slow tests: **279 passed in 209.97 seconds**.
+- Standalone gate: **WIS-DP vs brute force 100/100**.
+- Release hygiene: exit 0; app health: HTTP 200 with `ok`; repository lint passed.
+- Nine-run E1 smoke grid: all OK. Full release E1–E3 primary/repeat run remains pending.
+- This was agent-run local verification, not a second-person reproduction.
+- [Detailed scope and release blockers](VALIDATION.md).
+
 ---
 
 ## Phase 4 Correctness Gate: WIS-DP vs Brute-Force Oracle
