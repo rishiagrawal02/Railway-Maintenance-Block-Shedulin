@@ -61,10 +61,8 @@ def check_module_imports(source_file_path: Path, source_code: str | None = None)
                 violations.append(f"{path_str} (algorithms) illegally imports '{mod}'")
 
         elif is_app:
-            # app may only import rbp.api from rbp
-            if (mod == "rbp" or mod.startswith("rbp.")) and not (
-                mod == "rbp.api" or mod.startswith("rbp.api.") or mod.startswith("rbp.viz")
-            ):
+            allowed = ("rbp.api", "rbp.viz", "streamlit", "pandas", "matplotlib")
+            if not any(mod == root or mod.startswith(root + ".") for root in allowed):
                 violations.append(f"{path_str} (app) illegally imports '{mod}'")
 
     return violations

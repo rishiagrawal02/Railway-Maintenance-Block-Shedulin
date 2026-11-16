@@ -28,6 +28,14 @@ ruff check .
 streamlit run app/streamlit_app.py
 ```
 
+The RAILOPT browser UI includes Command Center, Dataset Studio, Scheduling
+Workspace, Adaptive Intelligence, Performance Analytics and Validation Center.
+Generate or upload an instance in the sidebar, choose an algorithm, then click
+**Run**. Algorithm Laboratory and Experiment History are deferred.
+
+See [the prototype guide](docs/UI.md) for input limits, caching, exports and
+focused verification.
+
 ### 4. Reproduce the experiments
 ```bash
 python -m rbp.experiments.runner config/experiments/e1.yaml --dry-run
