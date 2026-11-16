@@ -1,0 +1,2 @@
+# Bash scripts must run in Git Bash as well as on Linux/macOS.
+*.sh text eol=lf

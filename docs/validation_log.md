@@ -2,6 +2,27 @@
 
 This document records formal correctness gate results across development phases.
 
+## Final 1.0.0 implementation — 2026-11-16
+
+- Revision: `196ca8769be13bb8c084d6ae666a7b2ec673328e`.
+- Clean-clone Windows/Python 3.12.8 full suite: **280 passed in 229.84s**.
+- [Linux/Python 3.12 CI](https://github.com/rishiagrawal02/Railway-Maintenance-Block-Shedulin/actions/runs/43848968548):
+  full suite, standalone 100/100 gate, release hygiene and app health all passed.
+- Independent teammate verification waived by the user. Search-budget/timing
+  qualifications and earlier shortened E2/E3 repeat scope explicitly accepted.
+- [Final checklist](FINAL_RELEASE_CHECKLIST.md) records the limits of these claims.
+
+## Phase 11 local candidate verification — 2026-11-16
+
+- Revision: `590bf1e01bbd66326555888db40cbe059a1e9d50` on `phase-11-release`.
+- Separate clean clone and new Python 3.12.8 venv on Windows; README install passed.
+- Full suite, including slow tests: **279 passed in 209.97 seconds**.
+- Standalone gate: **WIS-DP vs brute force 100/100**.
+- Release hygiene: exit 0; app health: HTTP 200 with `ok`; repository lint passed.
+- Nine-run E1 smoke grid: all OK. Full release E1–E3 primary/repeat run remains pending.
+- This was agent-run local verification, not a second-person reproduction.
+- [Detailed scope and release blockers](VALIDATION.md).
+
 ---
 
 ## Phase 4 Correctness Gate: WIS-DP vs Brute-Force Oracle

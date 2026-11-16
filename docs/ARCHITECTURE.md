@@ -60,6 +60,16 @@ To ensure total independence, correctness, and clean maintainability, the follow
 5. **`app/` (Streamlit UI)**:
    - Presentation layer only. Contains zero scheduling logic.
    - Imports **only** `rbp.api` and `rbp.viz` from the project package.
+   - Its external imports are limited to Streamlit, pandas and matplotlib.
+   - `rbp.viz` creates reusable figures; the app closes each after rendering.
+
+## Implemented decisions and release scope
+
+See [D1–D12](DECISIONS.md) for the configured choices and implementation links.
+The six workspaces use the facade for domain operations. Algorithm Laboratory,
+Experiment History and what-if analysis remain deferred by user instruction.
+There is no authentication or authorization. Public user accounts require a new
+security phase and unauthorized-access tests; this release is a local prototype.
 
 ## Deterministic Seeding Policy
 
